@@ -52,7 +52,7 @@ public class UserDetails {
 		
 		usd.setUserName("NAME " + new Random().nextInt(100));
 		usd.setListOfString(Arrays.asList("Sokka", "Lingam", "Sokkalingam", "Kobe"));
-		usd.setAddresses(Arrays.asList(new Address(usd, "Main St", "Waltham", "MA", "01702")));
+		usd.setAddresses(Arrays.asList(new Address("Main St", "Waltham", "MA", "01702")));
 		return usd;
 	}
 
