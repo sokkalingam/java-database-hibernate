@@ -19,6 +19,7 @@ public class HibernateTest {
 	public static void main(String[] args) {
 		
 		sessionFactory = new Configuration().configure().buildSessionFactory();
+		session = sessionFactory.openSession();
 		
 		// add
 		for (int i = 0; i < 3; i++)
@@ -44,44 +45,36 @@ public class HibernateTest {
 		System.out.println(list);
 		System.out.println(list.size());
 		
+		session.close();
 		sessionFactory.close();
 		
 	}
 	
-	
 	public static Integer addUser(UserDetails user) {
-		session = sessionFactory.openSession();
 		Integer empId = null;
 		transaction = session.beginTransaction();
 		empId = (Integer) session.save(user);
 		transaction.commit();
-		session.close();
+		
 		return empId;
 	}
 	
 	public static void deleteUser(UserDetails user) {
-		session = sessionFactory.openSession();
 		transaction = session.beginTransaction();
 		session.delete(user);
 		transaction.commit();
-		session.close();
 	}
 	
 	public static void updateUser(UserDetails user) {
-		session = sessionFactory.openSession();
 		transaction = session.beginTransaction();
 		session.update(user);
 		transaction.commit();
-		session.close();
 	}
 	
 	@SuppressWarnings("unchecked")
 	public static List<UserDetails> readAll() {
 		List<UserDetails> result = new ArrayList<UserDetails>();
-		session = sessionFactory.openSession();
-		transaction = session.beginTransaction();
 		result = session.createCriteria(UserDetails.class).setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY).list();
-		session.close();
 		return result;
 	}
 }
