@@ -21,6 +21,7 @@
 
 
 		<mapping class="dto.UserDetails" />
+		<mapping class="dto.Address" />
 
 	</session-factory>
 </hibernate-configuration>
