@@ -3,7 +3,6 @@ package dto;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.ManyToOne;
 
 @Entity
 public class Address {
@@ -12,9 +11,8 @@ public class Address {
 		
 	}
 	
-	public Address(UserDetails user, String streetName, String cityName, String stateName, String zipcode) {
+	public Address(String streetName, String cityName, String stateName, String zipcode) {
 		super();
-		this.user = user;
 		this.streetName = streetName;
 		this.cityName = cityName;
 		this.stateName = stateName;
@@ -23,8 +21,6 @@ public class Address {
 	@Id @GeneratedValue
 	private Integer id;
 	private String streetName;
-	@ManyToOne
-	private UserDetails user;
 	@Override
 	public String toString() {
 		return "Address [id="

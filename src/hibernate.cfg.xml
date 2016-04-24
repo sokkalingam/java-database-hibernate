@@ -22,6 +22,9 @@
 
 		<mapping class="dto.UserDetails" />
 		<mapping class="dto.Address" />
+		<mapping class="models.Gem" />
+		<mapping class="models.review.GemReview" />
+		<mapping class="models.review.Review" />
 
 	</session-factory>
 </hibernate-configuration>
