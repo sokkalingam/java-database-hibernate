@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
@@ -17,14 +18,14 @@ import models.Model;
 @Entity
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class GemReview implements Model{
-	
+
 	public GemReview() {
 	}
 	
 	@Id @GeneratedValue
 	private Integer id;
 	
-	@JsonIgnore @OneToMany(cascade = CascadeType.ALL)
+	@JsonIgnore @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
 	private List<Review> reviews = new ArrayList<Review>();
 	
 	public AverageReview getAverageReview() {
@@ -41,5 +42,10 @@ public class GemReview implements Model{
 
 	public void setId(Integer id) {
 		this.id = id;
+	}
+	
+	@Override
+	public String toString() {
+		return "GemReview [id=" + id + ", reviews=" + reviews + "]";
 	}
 }

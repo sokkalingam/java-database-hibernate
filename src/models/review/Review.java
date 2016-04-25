@@ -125,4 +125,47 @@ public class Review implements Model {
 	public void setId(Integer id) {
 		this.id = id;
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((author == null) ? 0 : author.hashCode());
+		result = prime * result + ((body == null) ? 0 : body.hashCode());
+		result = prime * result + ((id == null) ? 0 : id.hashCode());
+		result = prime * result + ((stars == null) ? 0 : stars.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Review other = (Review) obj;
+//		if (author == null) {
+//			if (other.author != null)
+//				return false;
+//		} else if (!author.equals(other.author))
+//			return false;
+//		if (body == null) {
+//			if (other.body != null)
+//				return false;
+//		} else if (!body.equals(other.body))
+//			return false;
+		if (id == null) {
+			if (other.id != null)
+				return false;
+		} else if (!id.equals(other.id))
+			return false;
+//		if (stars == null) {
+//			if (other.stars != null)
+//				return false;
+//		} else if (!stars.equals(other.stars))
+//			return false;
+		return true;
+	}
 }
