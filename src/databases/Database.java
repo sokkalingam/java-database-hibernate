@@ -1,16 +1,9 @@
 package databases;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
-
-import models.Gem;
 
 public class Database {
 	
@@ -18,19 +11,8 @@ public class Database {
 	protected static Session session;
 	protected static Transaction transaction;
 	
-	private static Map<Integer, Gem> gems = new ConcurrentHashMap<Integer, Gem>();
-	private static List<Gem> gemsInCart = new ArrayList<Gem>();
-	
 	public Database() {
 		buildSessionFactory();
-	}
-
-	public static Map<Integer, Gem> getGems() {
-		return gems;
-	}
-
-	public static List<Gem> getGemsInCart() {
-		return gemsInCart;
 	}
 	
 	/*

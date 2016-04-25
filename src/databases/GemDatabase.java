@@ -4,23 +4,24 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.Criteria;
+import org.hibernate.criterion.Restrictions;
 
 import models.Gem;
 
 public class GemDatabase extends Database {
 	
-	public void addGem(Gem gem) {
+	public Integer addGem(Gem gem) {
+		Integer id = null;
 		sessionStart();
-		
-		session.save(gem);
-		
+		id = (Integer) session.save(gem);
 		sessionEnd();
+		return id;
 	}
 	
-	public void deleteGem(Gem gem) {
+	public void deleteGem(Integer gemId) {
 		sessionStart();
 		
-		session.delete(gem);
+		session.delete(gemId);
 		
 		sessionEnd();
 	}
@@ -55,6 +56,19 @@ public class GemDatabase extends Database {
 		sessionEnd();
 		
 		return gems;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<Gem> readGemsInCart() {
+		List<Gem> gemsInCart = new ArrayList<Gem>();
+		
+		sessionStart();
+		
+		gemsInCart = session.createCriteria(Gem.class).add(Restrictions.eq("inCart", true)).setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY).list();
+		
+		sessionEnd();
+		
+		return gemsInCart;
 	}
 
 }
