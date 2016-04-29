@@ -9,6 +9,8 @@ import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
 
+import databases.GemDatabase;
+import databases.ReviewDatabase;
 import models.Gem;
 import models.review.Review;
 
@@ -20,42 +22,75 @@ public class GemTest {
 	
 	public static void main(String[] args) {
 		
-		buildSessionFactory();
+//		buildSessionFactory();
+//		
+//		
+//		for (int i = 0; i < 5; i++)
+//			addGem(Gem.generateModel());
+//		
+//		List<Gem> gems = readGems();
+//		
+//		Gem gem = getGem(1);
+//		
+//		deleteGem(gem);
+//		
+//		gems = readGems();
+//		
+//		gem = gems.get(0);
+//		gem.setName("Updated Gem");
+//		
+//		updateGem(gem);
+//		
+//		gems = readGems();
+//		
+//		Review review = new Review(5, "Awesome Bro", "Sokkalingam");
+//		
+//		addReview(gems.get(0).getId(), review);
+//		
+//		gems = readGems();
+//		
+//		gem = gems.get(0);
+//		
+//		List<Review> reviews = getReviews(gem.getId());
+//		
+//		deleteReview(gem.getId(), reviews.get(0));
+//		
+//		reviews = getReviews(gem.getId());
+//		
+//		closeSessionFactory();
 		
+		GemDatabase gemDatabase = new GemDatabase();
 		
-		for (int i = 0; i < 5; i++)
-			addGem(Gem.generateModel());
+		for (int i = 0 ; i < 10; i ++)
+			gemDatabase.addGem(Gem.generateModel());
 		
-		List<Gem> gems = readGems();
+		List<Gem> gems = gemDatabase.readGems();
 		
-		Gem gem = getGem(1);
+		Gem gem = gems.get(0);
 		
-		deleteGem(gem);
+		gem.setName("Boom Man");
 		
-		gems = readGems();
+		gemDatabase.updateGem(gem);
 		
-		gem = gems.get(0);
-		gem.setName("Updated Gem");
+		gems = gemDatabase.readGems();
 		
-		updateGem(gem);
+		ReviewDatabase reviewDatabase = new ReviewDatabase();
 		
-		gems = readGems();
+		reviewDatabase.addReview(gem.getId(), new Review(5, "Awesome Review", "Sokka"));
+		reviewDatabase.addReview(gem.getId(), new Review(1, "Bad Review", "Jon"));
 		
-		Review review = new Review(5, "Awesome Bro", "Sokkalingam");
+		gems = gemDatabase.readGems();
+		List<Review> reviews = reviewDatabase.getReviews(gem.getId());
 		
-		addReview(gems.get(0).getId(), review);
+		Review review = reviews.get(0);
 		
-		gems = readGems();
+		reviewDatabase.deleteReview(gem.getId(), review);
 		
-		gem = gems.get(0);
+		reviews = reviewDatabase.getReviews(gem.getId());
 		
-		List<Review> reviews = getReviews(gem.getId());
+		gems = gemDatabase.readGems();
 		
-		deleteReview(gem.getId(), reviews.get(0));
-		
-		reviews = getReviews(gem.getId());
-		
-		closeSessionFactory();
+		gemDatabase.closeSessionFactory();
 	}
 	
 	public static void addGem(Gem gem) {
