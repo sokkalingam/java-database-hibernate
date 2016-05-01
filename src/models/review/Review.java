@@ -32,6 +32,10 @@ public class Review implements Model {
 		this.author = author;
 	}
 
+	public Review(Integer reviewId) {
+		this.id = reviewId;
+	}
+
 	@Id @GeneratedValue
 	@JsonProperty("id")
 	private Integer id;

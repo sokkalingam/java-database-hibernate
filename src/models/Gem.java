@@ -17,6 +17,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 import models.review.GemReview;
+import testdata.GemData;
 
 @Entity
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -215,7 +216,7 @@ public class Gem implements Model {
 
 	public static Gem generateModel() {
 		Gem gem = new Gem();
-		gem.setName("Test Gem Name");
+		gem.setName(GemData.getName());
 		gem.setSpecifications("Item ID:	399349, Content: 10 gems, Weight: 2.18ct (total), Calibrated: 3.5 mm, "
 				+ "ExactSize:	3.50 mm x 2.06 mm (avg.), Shape:	Round Facet, Clarity:	VS-SI, "
 				+ "Treatment:	Heated, Origin:	Myanmar");
@@ -225,7 +226,7 @@ public class Gem implements Model {
 		gem.setQuantity(new Random().nextInt(4) + 1);
 		gem.setCanPurchase(true);
 		gem.setInCart(false);
-		gem.setImage("ImageUrl.jpg");
+		gem.setImage(GemData.getImage());
 		gem.setPrice((double) (new Random().nextInt(30000) + 2000));
 		return gem;
 	}

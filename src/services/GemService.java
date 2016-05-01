@@ -2,30 +2,26 @@ package services;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.UriInfo;
 
-import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
-import databases.Database;
+import databases.GemDatabase;
 import models.Gem;
 import services.helpers.ParseHelper;
 
 public class GemService {
 	
-	private Map<Integer, Gem> gems = Database.getGems();
-	
-	private static Integer gemCounter = 0;
+	private GemDatabase gemDatabase = new GemDatabase();
 	
 	public GemService() {
 		
 	}
 	
 	public List<Gem> getAllGems() {
-		return new ArrayList<Gem>(this.gems.values());
+		return gemDatabase.readGems();
 	}
 	
 	/**Search Gems based on query params
@@ -56,14 +52,13 @@ public class GemService {
 	public Gem getGem(Integer id) {
 		if (id == null)
 			return null;
-		return this.gems.get(id);
+		return gemDatabase.getGem(id);
 	}
 	
 	public Gem addGem(Gem gem) {
 		if (gem == null)
 			return null;
-		gem.setId(gemCounter++);
-		this.gems.put(gem.getId(), gem);
+		gem.setId(gemDatabase.addGem(gem));
 		return gem;
 	}
 	
@@ -76,71 +71,56 @@ public class GemService {
 	public Gem updateGem(Integer id, Gem gem) {
 		if (id == null || gem == null)
 			return null;
-		Gem existingGem = this.gems.get(id);
+		Gem existingGem = getGem(id);
 		if (existingGem == null)
 			return null;
-		gem.setId(id);
 		gem.setGemReview(existingGem.getGemReview());
-		this.gems.put(id, gem);
+		gemDatabase.updateGem(gem);
 		return gem;
 	}
 	
 	public Gem checkout(Integer id) {
 		if (id == null)
 			return null;
-		Gem gem = null;
-		if (isGemPresent(id)) {
-			gem = gems.get(id);
+		Gem gem = getGem(id);
+		if (gem != null) {
 			
-			if (gem.getQuantity() > 0)
+			if (gem.getQuantity() > 0) {
 				gem.setQuantity(gem.getQuantity() - 1);
-			
+				gemDatabase.updateGem(gem);
+			}
 			return gem;
 		}
-		
 		return null;
 	}
 	
-	public Gem deleteGem(Integer id) {
-		if (id == null)
-			return null;
-		return this.gems.remove(id);
+	public void deleteGem(Integer id) {
+		if (id != null)
+		gemDatabase.deleteGem(id);
 	}
 	
 	public List<Gem> getGemsInCart() {
-		List<Gem> gemsInCart = new ArrayList<Gem>();
-		for (Gem gem : this.gems.values())
-			if (BooleanUtils.isTrue(gem.isInCart()))
-				gemsInCart.add(gem);
-		return gemsInCart;
+		return gemDatabase.readGemsInCart();
 	}
 	
 	public Gem addGemToCart(Integer id) {
-		if (isGemPresent(id)) {
-			Gem gem = gems.get(id);
-			if (!BooleanUtils.isTrue(gem.isInCart())) {
-				gem.setInCart(true);
-				return gem;
-			}
+		Gem gem = getGem(id);
+		if (gem != null && gem.isInCart() != null && gem.isInCart()) {
+			gem.setInCart(true);
+			gemDatabase.updateGem(gem);
+			return gem;
 		}
 		return null;
 	}
 	
 	public Gem removeGemFromCart(Integer id) {
-		if (isGemPresent(id)) {
-			Gem gem = gems.get(id);
-			if (gem.isInCart()) {
-				gem.setInCart(false);
-				return gem;
-			}
+		Gem gem = getGem(id);
+		if (gem != null && gem.isInCart() != null && !gem.isInCart()) {
+			gem.setInCart(false);
+			gemDatabase.updateGem(gem);
+			return gem;
 		}
 		return null;
-	}
-	
-	public boolean isGemPresent(Integer gemId) {
-		if (gemId == null)
-			return false;
-		return gems.containsKey(gemId);
 	}
 	
 	private boolean _isNameContains(Gem gem, String searchName) {

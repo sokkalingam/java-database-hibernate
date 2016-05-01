@@ -1,204 +1,44 @@
 package test;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.hibernate.Criteria;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
-import org.hibernate.cfg.Configuration;
-
-import databases.GemDatabase;
-import databases.ReviewDatabase;
-import models.Gem;
-import models.review.Review;
+import resources.GemResource;
 
 public class GemTest {
 	
-	private static SessionFactory sessionFactory;
-	private static Session session;
-	private static Transaction transaction;
-	
 	public static void main(String[] args) {
 		
-//		buildSessionFactory();
+//		GemDatabase gemDatabase = new GemDatabase();
 //		
+//		for (int i = 0 ; i < 10; i ++)
+//			gemDatabase.addGem(Gem.generateModel());
 //		
-//		for (int i = 0; i < 5; i++)
-//			addGem(Gem.generateModel());
+//		List<Gem> gems = gemDatabase.readGems();
 //		
-//		List<Gem> gems = readGems();
+//		Gem gem = gems.get(0);
 //		
-//		Gem gem = getGem(1);
+//		gem.setName("Boom Man");
 //		
-//		deleteGem(gem);
+//		gemDatabase.updateGem(gem);
 //		
-//		gems = readGems();
+//		gems = gemDatabase.readGems();
 //		
-//		gem = gems.get(0);
-//		gem.setName("Updated Gem");
+//		ReviewDatabase reviewDatabase = new ReviewDatabase();
 //		
-//		updateGem(gem);
+//		reviewDatabase.addReview(gem.getId(), new Review(5, "Awesome Review", "Sokka"));
+//		reviewDatabase.addReview(gem.getId(), new Review(1, "Bad Review", "Jon"));
 //		
-//		gems = readGems();
+//		gems = gemDatabase.readGems();
+//		List<Review> reviews = reviewDatabase.getReviews(gem.getId());
 //		
-//		Review review = new Review(5, "Awesome Bro", "Sokkalingam");
+//		Review review = reviews.get(0);
 //		
-//		addReview(gems.get(0).getId(), review);
+//		reviewDatabase.deleteReview(gem.getId(), review);
 //		
-//		gems = readGems();
+//		reviews = reviewDatabase.getReviews(gem.getId());
 //		
-//		gem = gems.get(0);
+//		gems = gemDatabase.readGems();
 //		
-//		List<Review> reviews = getReviews(gem.getId());
-//		
-//		deleteReview(gem.getId(), reviews.get(0));
-//		
-//		reviews = getReviews(gem.getId());
-//		
-//		closeSessionFactory();
+//		gemDatabase.closeSessionFactory();
 		
-		GemDatabase gemDatabase = new GemDatabase();
-		
-		for (int i = 0 ; i < 10; i ++)
-			gemDatabase.addGem(Gem.generateModel());
-		
-		List<Gem> gems = gemDatabase.readGems();
-		
-		Gem gem = gems.get(0);
-		
-		gem.setName("Boom Man");
-		
-		gemDatabase.updateGem(gem);
-		
-		gems = gemDatabase.readGems();
-		
-		ReviewDatabase reviewDatabase = new ReviewDatabase();
-		
-		reviewDatabase.addReview(gem.getId(), new Review(5, "Awesome Review", "Sokka"));
-		reviewDatabase.addReview(gem.getId(), new Review(1, "Bad Review", "Jon"));
-		
-		gems = gemDatabase.readGems();
-		List<Review> reviews = reviewDatabase.getReviews(gem.getId());
-		
-		Review review = reviews.get(0);
-		
-		reviewDatabase.deleteReview(gem.getId(), review);
-		
-		reviews = reviewDatabase.getReviews(gem.getId());
-		
-		gems = gemDatabase.readGems();
-		
-		gemDatabase.closeSessionFactory();
+		new GemResource().populate(10, 2);
 	}
-	
-	public static void addGem(Gem gem) {
-		sessionStart();
-		
-		session.save(gem);
-		
-		sessionEnd();
-	}
-	
-	public static void deleteGem(Gem gem) {
-		sessionStart();
-		
-		session.delete(gem);
-		
-		sessionEnd();
-	}
-	
-	public static void updateGem(Gem gem) {
-		sessionStart();
-		
-		session.update(gem);
-		
-		sessionEnd();
-	}
-	
-	public static Gem getGem(Integer id) {
-		Gem gem = null;
-		
-		sessionStart();
-		gem = session.get(Gem.class, id);
-		sessionEnd();
-		
-		return gem;
-	}
-	
-	
-	@SuppressWarnings("unchecked")
-	public static List<Gem> readGems() {
-		List<Gem> gems = new ArrayList<Gem>();
-		
-		sessionStart();
-		
-		gems = session.createCriteria(Gem.class).setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY).list();
-		
-		sessionEnd();
-		
-		return gems;
-	}
-	
-	public static void addReview(Integer gemId, Review review) {
-		sessionStart();
-		Gem gem = session.get(Gem.class, gemId);
-		gem.getGemReview().getReviews().add(review);
-		session.persist(gem);
-		sessionEnd();
-	}
-	
-	public static void deleteReview(Integer gemId, Review review) {
-		sessionStart();
-		Gem gem = session.get(Gem.class, gemId);
-		gem.getGemReview().getReviews().remove(review);
-		session.persist(gem);
-		sessionEnd();
-	}
-	
-	public static List<Review> getReviews(Integer gemId) {
-		return getGem(gemId).getGemReview().getReviews();
-	}
-	
-	
-	
-	
-	/*
-	 * Session methods
-	 */
-	public static void sessionStart(){
-		openSession();
-		beginTransaction();
-	}
-	
-	public static void sessionEnd() {
-		commit();
-		closeSession();
-	}
-	
-	public static void buildSessionFactory() {
-		sessionFactory = new Configuration().configure().buildSessionFactory();
-	}
-	
-	public static void openSession() {
-		session = sessionFactory.openSession();
-	}
-	
-	public static void beginTransaction() {
-		transaction = session.beginTransaction();
-	}
-	
-	public static void commit() {
-		transaction.commit();
-	}
-	
-	public static void closeSession() {
-		session.close();
-	}
-	
-	public static void closeSessionFactory() {
-		sessionFactory.close();
-	}
-
 }
